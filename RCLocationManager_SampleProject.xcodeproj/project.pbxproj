@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4A49981415D672A600FE73B1 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 4A49980F15D672A600FE73B1 /* .gitignore */; };
-		4A49981515D672A600FE73B1 /* RCLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A49981215D672A600FE73B1 /* RCLocationManager.m */; };
-		4A49981615D672A600FE73B1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4A49981315D672A600FE73B1 /* README.md */; };
+		4A49984115D67C9500FE73B1 /* RCLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A49984015D67C9500FE73B1 /* RCLocationManager.m */; };
 		4A974AAE15CCFC0F00E0F33E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A974AAD15CCFC0F00E0F33E /* UIKit.framework */; };
 		4A974AB015CCFC0F00E0F33E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A974AAF15CCFC0F00E0F33E /* Foundation.framework */; };
 		4A974AB215CCFC0F00E0F33E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A974AB115CCFC0F00E0F33E /* CoreGraphics.framework */; };
@@ -30,10 +28,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4A49980F15D672A600FE73B1 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		4A49981115D672A600FE73B1 /* RCLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCLocationManager.h; sourceTree = "<group>"; };
-		4A49981215D672A600FE73B1 /* RCLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCLocationManager.m; sourceTree = "<group>"; };
-		4A49981315D672A600FE73B1 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		4A49983F15D67C9500FE73B1 /* RCLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCLocationManager.h; sourceTree = "<group>"; };
+		4A49984015D67C9500FE73B1 /* RCLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCLocationManager.m; sourceTree = "<group>"; };
 		4A974AA915CCFC0F00E0F33E /* RCLocationManager_SampleProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RCLocationManager_SampleProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A974AAD15CCFC0F00E0F33E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4A974AAF15CCFC0F00E0F33E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -77,24 +73,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4A49980E15D672A600FE73B1 /* RCLocationManager */ = {
+		4A49983E15D67C9500FE73B1 /* RCLocationManager */ = {
 			isa = PBXGroup;
 			children = (
-				4A49980F15D672A600FE73B1 /* .gitignore */,
-				4A49981015D672A600FE73B1 /* RCLocationManager */,
-				4A49981315D672A600FE73B1 /* README.md */,
+				4A49983F15D67C9500FE73B1 /* RCLocationManager.h */,
+				4A49984015D67C9500FE73B1 /* RCLocationManager.m */,
 			);
 			path = RCLocationManager;
 			sourceTree = SOURCE_ROOT;
-		};
-		4A49981015D672A600FE73B1 /* RCLocationManager */ = {
-			isa = PBXGroup;
-			children = (
-				4A49981115D672A600FE73B1 /* RCLocationManager.h */,
-				4A49981215D672A600FE73B1 /* RCLocationManager.m */,
-			);
-			path = RCLocationManager;
-			sourceTree = "<group>";
 		};
 		4A974A9E15CCFC0F00E0F33E = {
 			isa = PBXGroup;
@@ -130,7 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				4AA9C3FC15CD639C00D271A2 /* RegionAnnotation */,
-				4A49980E15D672A600FE73B1 /* RCLocationManager */,
+				4A49983E15D67C9500FE73B1 /* RCLocationManager */,
 				4A974ABC15CCFC0F00E0F33E /* AppDelegate.h */,
 				4A974ABD15CCFC0F00E0F33E /* AppDelegate.m */,
 				4A974ABF15CCFC0F00E0F33E /* ViewController.h */,
@@ -232,8 +218,6 @@
 				4AA9C42015CDBFD700D271A2 /* Default@2x.png in Resources */,
 				4AA9C42315CDBFD700D271A2 /* RemoveRegion.png in Resources */,
 				4AA9C42415CDBFD700D271A2 /* RemoveRegion@2x.png in Resources */,
-				4A49981415D672A600FE73B1 /* .gitignore in Resources */,
-				4A49981615D672A600FE73B1 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,7 +233,7 @@
 				4A974AC115CCFC0F00E0F33E /* ViewController.m in Sources */,
 				4AA9C40115CD639C00D271A2 /* RegionAnnotation.m in Sources */,
 				4AA9C40215CD639C00D271A2 /* RegionAnnotationView.m in Sources */,
-				4A49981515D672A600FE73B1 /* RCLocationManager.m in Sources */,
+				4A49984115D67C9500FE73B1 /* RCLocationManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
