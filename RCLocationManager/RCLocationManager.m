@@ -122,7 +122,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 - (void)_addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy
 {
     NSSet *regions = self.regionLocationManager.monitoredRegions;
-    NSLog(@"[%@] isMonitoringThisCoordinate: [regions count]: %d", NSStringFromClass([self class]), [regions count]);
+    NSLog(@"[%@] _addRegionForMonitoring:desiredAccuracy: [regions count]: %d", NSStringFromClass([self class]), [regions count]);
     NSAssert([regions count] < MAX_MONITORING_REGIONS, @"Only support %d regions!!", MAX_MONITORING_REGIONS);
     
     [self.regionLocationManager startMonitoringForRegion:region desiredAccuracy:accuracy];
