@@ -52,9 +52,11 @@ extern NSString * const RCLocationManagerNotificationLocationUserInfoKey;
 - (void)updateUserLocation;
 - (void)stopUpdatingLocation;
 
+- (void)addCoordinateForMonitoring:(CLLocationCoordinate2D)coordinate;
+- (void)addCoordinateForMonitoring:(CLLocationCoordinate2D)coordinate desiredAccuracy:(CLLocationAccuracy)accuracy;
+
 - (void)addRegionForMonitoring:(CLRegion *)region;
 - (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy;
-- (void)addCoordinateForMonitoring:(CLLocationCoordinate2D)coordinate withRadius:(CLLocationAccuracy)radius;
 - (void)stopMonitoringForRegion:(CLRegion *)region;
 - (void)stopMonitoringAllRegions;
 

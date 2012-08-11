@@ -43,6 +43,8 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 @property (nonatomic, readonly) CLLocationManager *regionLocationManager;
 
 - (void)_init;
+- (void)_addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy;
+- (BOOL)region:(CLRegion *)region inRegion:(CLRegion *)otherRegion;
 - (BOOL)isMonitoringThisCoordinate:(CLLocationCoordinate2D)coordinate;
 - (BOOL)isMonitoringThisRegion:(CLRegion *)region;
 
@@ -114,11 +116,35 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 #pragma mark - Private
 
-- (BOOL)isMonitoringThisCoordinate:(CLLocationCoordinate2D)coordinate
+/**
+ * @discussion check if monitoring all regions
+ */
+- (void)_addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy
 {
     NSSet *regions = self.regionLocationManager.monitoredRegions;
     NSLog(@"[%@] isMonitoringThisCoordinate: [regions count]: %d", NSStringFromClass([self class]), [regions count]);
     NSAssert([regions count] < MAX_MONITORING_REGIONS, @"Only support %d regions!!", MAX_MONITORING_REGIONS);
+    
+    [self.regionLocationManager startMonitoringForRegion:region desiredAccuracy:accuracy];
+    
+}
+
+- (BOOL)region:(CLRegion *)region inRegion:(CLRegion *)otherRegion
+{
+    NSLog(@"[%@] region:containsRegion:", NSStringFromClass([self class]));
+    
+    
+    return NO;
+}
+
+/**
+ * @discussion check if coordinate is in a region
+ */
+- (BOOL)isMonitoringThisCoordinate:(CLLocationCoordinate2D)coordinate
+{
+    NSLog(@"[%@] isMonitoringThisCoordinate:", NSStringFromClass([self class]));
+    
+    NSSet *regions = self.regionLocationManager.monitoredRegions;
     
     for (CLRegion *reg in regions) {
         if ([reg containsCoordinate:coordinate]) {
@@ -128,10 +154,11 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     return NO;
 }
 
+/**
+ * @discussion check if region is inside other region
+ */
 - (BOOL)isMonitoringThisRegion:(CLRegion *)region
 {
-    NSLog(@"[%@] isMonitoringThisRegion:", NSStringFromClass([self class]));
-    
     return [self isMonitoringThisCoordinate:region.center];
 }
 
@@ -280,32 +307,35 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     [self.userLocationManager stopUpdatingLocation];
 }
 
-- (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy
+- (void)addCoordinateForMonitoring:(CLLocationCoordinate2D)coordinate
 {
-    NSLog(@"[%@] addRegionForMonitoring:", NSStringFromClass([self class]));
+    NSLog(@"[%@] addCoordinateForMonitoring:", NSStringFromClass([self class]));
     
-    if (![self isMonitoringThisRegion:region]) {
-        [self.regionLocationManager startMonitoringForRegion:region desiredAccuracy:accuracy];
-    }
+    [self addCoordinateForMonitoring:coordinate desiredAccuracy:kDefaultRegionDesiredAccuracy];
+}
+
+- (void)addCoordinateForMonitoring:(CLLocationCoordinate2D)coordinate desiredAccuracy:(CLLocationAccuracy)accuracy;
+{
+    NSLog(@"[%@] addCoordinateForMonitoring:withRadius:", NSStringFromClass([self class]));
+    
+    CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:coordinate radius:accuracy identifier:[NSString stringWithFormat:@"Region with center (%f, %f)", coordinate.latitude, coordinate.longitude]];
+    [self addRegionForMonitoring:region];
 }
 
 - (void)addRegionForMonitoring:(CLRegion *)region
 {
     NSLog(@"[%@] addRegionForMonitoring:", NSStringFromClass([self class]));
-
-    if (![self isMonitoringThisRegion:region]) {
-        [self.regionLocationManager startMonitoringForRegion:region desiredAccuracy:kDefaultRegionDesiredAccuracy];
-    }
     
-
+    [self addRegionForMonitoring:region desiredAccuracy:region.radius];
 }
 
-- (void)addCoordinateForMonitoring:(CLLocationCoordinate2D)coordinate withRadius:(CLLocationAccuracy)radius
+- (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy
 {
-    NSLog(@"[%@] addCoordinateForMonitoring:withRadius:", NSStringFromClass([self class]));
+    NSLog(@"[%@] addRegionForMonitoring:", NSStringFromClass([self class]));
     
-    CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:coordinate radius:radius identifier:[NSString stringWithFormat:@"Region with center (%f, %f)", coordinate.latitude, coordinate.longitude]];
-    [self addRegionForMonitoring:region];
+    if (![self isMonitoringThisRegion:region]) {
+        [self _addRegionForMonitoring:region desiredAccuracy:accuracy];
+    }
 }
 
 - (void)stopMonitoringForRegion:(CLRegion *)region
