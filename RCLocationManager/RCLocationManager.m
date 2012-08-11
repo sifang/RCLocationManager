@@ -24,9 +24,9 @@
 
 #define MAX_MONITORING_REGIONS 20
 
-#define kDefaultUserDistanceFilter  kCLLocationAccuracyHundredMeters
+#define kDefaultUserDistanceFilter  kCLLocationAccuracyBestForNavigation
 #define kDefaultUserDesiredAccuracy kCLLocationAccuracyBest
-#define kDefaultRegionDistanceFilter  kCLLocationAccuracyHundredMeters
+#define kDefaultRegionDistanceFilter  kCLLocationAccuracyBestForNavigation
 #define kDefaultRegionDesiredAccuracy kCLLocationAccuracyBest
 
 NSString * const RCLocationManagerUserLocationDidChangeNotification = @"RCLocationManagerUserLocationDidChangeNotification";
@@ -123,7 +123,10 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
     NSSet *regions = self.regionLocationManager.monitoredRegions;
     NSLog(@"[%@] _addRegionForMonitoring:desiredAccuracy: [regions count]: %d", NSStringFromClass([self class]), [regions count]);
-    NSAssert([regions count] < MAX_MONITORING_REGIONS, @"Only support %d regions!!", MAX_MONITORING_REGIONS);
+    
+    NSAssert([CLLocationManager regionMonitoringAvailable] || [CLLocationManager regionMonitoringEnabled], @"RegionMonitoring not available!");
+    NSAssert([regions count] < MAX_MONITORING_REGIONS, @"Only support %d regions!", MAX_MONITORING_REGIONS);
+    NSAssert(accuracy < self.regionLocationManager.maximumRegionMonitoringDistance, @"Accuracy is too long!");
     
     [self.regionLocationManager startMonitoringForRegion:region desiredAccuracy:accuracy];
     
@@ -133,6 +136,13 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
     NSLog(@"[%@] region:containsRegion:", NSStringFromClass([self class]));
     
+    if ([region containsCoordinate:otherRegion.center] || [otherRegion containsCoordinate:region.center]) {
+        if (region.radius < otherRegion.radius) {
+            
+        } else {
+            
+        }
+    }
     
     return NO;
 }
@@ -318,7 +328,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
     NSLog(@"[%@] addCoordinateForMonitoring:withRadius:", NSStringFromClass([self class]));
     
-    CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:coordinate radius:accuracy identifier:[NSString stringWithFormat:@"Region with center (%f, %f)", coordinate.latitude, coordinate.longitude]];
+    CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:coordinate radius:accuracy identifier:[NSString stringWithFormat:@"Region with center (%f, %f) and radius (%f)", coordinate.latitude, coordinate.longitude, accuracy]];
     [self addRegionForMonitoring:region];
 }
 
