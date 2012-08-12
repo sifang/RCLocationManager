@@ -16,12 +16,6 @@
 
 #import "RCLocationManager.h"
 
-#ifdef DEBUG
-#   define NSLog(...) NSLog(__VA_ARGS__);
-#else
-#   define NSLog(...)
-#endif
-
 #define MAX_MONITORING_REGIONS 20
 
 #define kDefaultUserDistanceFilter  kCLLocationAccuracyBestForNavigation
