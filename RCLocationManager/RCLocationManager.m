@@ -117,7 +117,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 #pragma mark - Private
 
 /**
- * @discussion check if monitoring all regions
+ * @discussion check if region is correct
  */
 - (void)_addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy
 {
@@ -128,6 +128,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     NSAssert([regions count] < MAX_MONITORING_REGIONS, @"Only support %d regions!", MAX_MONITORING_REGIONS);
     NSAssert(accuracy < self.regionLocationManager.maximumRegionMonitoringDistance, @"Accuracy is too long!");
     
+    
     [self.regionLocationManager startMonitoringForRegion:region desiredAccuracy:accuracy];
     
 }
@@ -136,14 +137,16 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
     NSLog(@"[%@] region:containsRegion:", NSStringFromClass([self class]));
     
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:region.center.latitude longitude:region.center.longitude];
+    CLLocation *otherLocation = [[CLLocation alloc] initWithLatitude:otherRegion.center.latitude longitude:otherRegion.center.longitude];
+    
     if ([region containsCoordinate:otherRegion.center] || [otherRegion containsCoordinate:region.center]) {
-        if (region.radius < otherRegion.radius) {
-            
-        } else {
-            
+        if ([location distanceFromLocation:otherLocation] + region.radius <= otherRegion.radius ) {
+            return YES;
+        } else if ([location distanceFromLocation:otherLocation] + otherRegion.radius <= region.radius ) {
+            return YES;
         }
     }
-    
     return NO;
 }
 
@@ -169,7 +172,22 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
  */
 - (BOOL)isMonitoringThisRegion:(CLRegion *)region
 {
-    return [self isMonitoringThisCoordinate:region.center];
+    NSLog(@"[%@] isMonitoringThisRegion:", NSStringFromClass([self class]));
+    
+    NSSet *regions = self.regionLocationManager.monitoredRegions;
+    
+    for (CLRegion *reg in regions) {
+        if ([self region:region inRegion:reg]) {
+            if (region.radius < reg.radius) {
+                return YES;
+            }
+            else {
+                [self.regionLocationManager startMonitoringForRegion:reg];
+                return NO;
+            }
+        }
+    }
+    return NO;
 }
 
 #pragma mark - Setters
@@ -329,6 +347,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     NSLog(@"[%@] addCoordinateForMonitoring:withRadius:", NSStringFromClass([self class]));
     
     CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:coordinate radius:accuracy identifier:[NSString stringWithFormat:@"Region with center (%f, %f) and radius (%f)", coordinate.latitude, coordinate.longitude, accuracy]];
+    
     [self addRegionForMonitoring:region];
 }
 
