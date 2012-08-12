@@ -250,7 +250,9 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
 	NSLog(@"[%@] locationManager:didFailWithError:%@", NSStringFromClass([self class]), error);
     
-    [self.delegate locationManager:self didFailWithError:error];
+    if ([self.delegate respondsToSelector:@selector(locationManager:didFailWithError:)]) {
+        [self.delegate locationManager:self didFailWithError:error];
+    }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
@@ -267,14 +269,18 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
                                                       userInfo:(
                                                                 [NSDictionary dictionaryWithObject:newLocation
                                                                                             forKey:RCLocationManagerNotificationLocationUserInfoKey])];
-    [self.delegate locationManager:self didUpdateToLocation:newLocation fromLocation:oldLocation];
+    if ([self.delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:fromLocation:)]) {
+        [self.delegate locationManager:self didUpdateToLocation:newLocation fromLocation:oldLocation];
+    }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
     NSLog(@"[%@] locationManager:didEnterRegion:%@ at %@", NSStringFromClass([self class]), region.identifier, [NSDate date]);
     	
-    [self.delegate locationManager:self didEnterRegion:region];
+    if ([self.delegate respondsToSelector:@selector(locationManager:didEnterRegion:)]) {
+        [self.delegate locationManager:self didEnterRegion:region];
+    }
 }
 
 
@@ -282,7 +288,9 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
     NSLog(@"[%@] locationManager:didExitRegion:%@ at %@", NSStringFromClass([self class]), region.identifier, [NSDate date]);
 	
-    [self.delegate locationManager:self didExitRegion:region];
+    if ([self.delegate respondsToSelector:@selector(locationManager:didExitRegion:)]) {
+        [self.delegate locationManager:self didExitRegion:region];
+    }
 }
 
 
@@ -290,7 +298,9 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
     NSLog(@"[%@] locationManager:monitoringDidFailForRegion:%@: %@", NSStringFromClass([self class]), region.identifier, error);
 	
-    [self.delegate locationManager:self monitoringDidFailForRegion:region withError:error];
+    if ([self.delegate respondsToSelector:@selector(locationManager:monitoringDidFailForRegion:)]) {
+        [self.delegate locationManager:self monitoringDidFailForRegion:region withError:error];
+    }
 }
 
 #pragma mark Method's
