@@ -133,6 +133,9 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     
 }
 
+/**
+ * @discussion only check if region is inside otherRegion
+ */
 - (BOOL)region:(CLRegion *)region inRegion:(CLRegion *)otherRegion
 {
     NSLog(@"[%@] region:containsRegion:", NSStringFromClass([self class]));
@@ -144,7 +147,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
         if ([location distanceFromLocation:otherLocation] + region.radius <= otherRegion.radius ) {
             return YES;
         } else if ([location distanceFromLocation:otherLocation] + otherRegion.radius <= region.radius ) {
-            return YES;
+            return NO;
         }
     }
     return NO;
@@ -178,13 +181,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     
     for (CLRegion *reg in regions) {
         if ([self region:region inRegion:reg]) {
-            if (region.radius < reg.radius) {
                 return YES;
-            }
-            else {
-                [self.regionLocationManager startMonitoringForRegion:reg];
-                return NO;
-            }
         }
     }
     return NO;
