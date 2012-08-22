@@ -298,7 +298,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
     NSLog(@"[%@] locationManager:monitoringDidFailForRegion:%@: %@", NSStringFromClass([self class]), region.identifier, error);
 	
-    if ([self.delegate respondsToSelector:@selector(locationManager:monitoringDidFailForRegion:)]) {
+    if ([self.delegate respondsToSelector:@selector(locationManager:monitoringDidFailForRegion:withError:)]) {
         [self.delegate locationManager:self monitoringDidFailForRegion:region withError:error];
     }
 }
