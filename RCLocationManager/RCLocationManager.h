@@ -21,6 +21,7 @@ extern NSString * const RCLocationManagerUserLocationDidChangeNotification;
 extern NSString * const RCLocationManagerNotificationLocationUserInfoKey;
 
 typedef void(^RCLocationManagerLocationUpdateBlock)(CLLocation *newLocation, CLLocation *oldLocation, NSError *error);
+typedef void(^RCLocationManagerRegionUpdateBlock)(CLRegion *region, BOOL enter, NSError *error);
 
 @protocol RCLocationManagerDelegate;
 
@@ -53,7 +54,7 @@ typedef void(^RCLocationManagerLocationUpdateBlock)(CLLocation *newLocation, CLL
 + (BOOL)regionMonitoringAvailable;
 
 - (void)startUpdatingLocation;
-- (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block;
+- (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block; // USING BLOCKS
 - (void)updateUserLocation;
 - (void)stopUpdatingLocation;
 
@@ -62,6 +63,7 @@ typedef void(^RCLocationManagerLocationUpdateBlock)(CLLocation *newLocation, CLL
 
 - (void)addRegionForMonitoring:(CLRegion *)region;
 - (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy;
+- (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy withBlock:(RCLocationManagerRegionUpdateBlock)block; // USING BLOCKS
 - (void)stopMonitoringForRegion:(CLRegion *)region;
 - (void)stopMonitoringAllRegions;
 

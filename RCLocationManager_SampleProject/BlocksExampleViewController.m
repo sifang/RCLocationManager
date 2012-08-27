@@ -8,7 +8,6 @@
 
 #import "BlocksExampleViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import "RCLocationManager.h"
 
 @interface BlocksExampleViewController ()
 
@@ -68,6 +67,41 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+- (IBAction)addRegion:(id)sender
+{
+    if ([RCLocationManager regionMonitoringAvailable]) {
+		// Create a new region based on the center of the map view.
+		CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(self.mapView.centerCoordinate.latitude, self.mapView.centerCoordinate.longitude);
+		CLRegion *newRegion = [[CLRegion alloc] initCircularRegionWithCenter:coord
+																	  radius:1000.0
+																  identifier:[NSString stringWithFormat:@"%f, %f", self.mapView.centerCoordinate.latitude, self.mapView.centerCoordinate.longitude]];
+		
+		// Create an annotation to show where the region is located on the map.
+		RegionAnnotation *myRegionAnnotation = [[RegionAnnotation alloc] initWithCLRegion:newRegion];
+		myRegionAnnotation.coordinate = newRegion.center;
+		myRegionAnnotation.radius = newRegion.radius;
+		
+		[self.mapView addAnnotation:myRegionAnnotation];
+		
+		
+		// Start monitoring the newly created region.
+        [[RCLocationManager sharedManager] addRegionForMonitoring:newRegion desiredAccuracy:kCLLocationAccuracyBest withBlock:^(CLRegion *region, BOOL enter, NSError *error) {
+
+            if (error) {
+                NSLog(@"Region ERROR using block");
+            } else if (enter) {
+                NSLog(@"Region ENTER using block");
+            } else {
+                NSLog(@"Region EXIT using block");
+            }
+            
+        }];
+	}
+	else {
+		NSLog(@"Region monitoring is not available.");
+	}
 }
 
 

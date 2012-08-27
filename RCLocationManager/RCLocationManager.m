@@ -47,6 +47,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 @interface RCLocationManager () // Blocks
 
 @property (copy) RCLocationManagerLocationUpdateBlock locationBlock;
+@property (copy) RCLocationManagerRegionUpdateBlock regionBlock;
 
 @end
 
@@ -304,6 +305,10 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
     NSLog(@"[%@] locationManager:didEnterRegion:%@ at %@", NSStringFromClass([self class]), region.identifier, [NSDate date]);
     	
+    if (self.regionBlock != nil) {
+        self.regionBlock(region, YES, nil);
+    }
+    
     if ([self.delegate respondsToSelector:@selector(locationManager:didEnterRegion:)]) {
         [self.delegate locationManager:self didEnterRegion:region];
     }
@@ -313,6 +318,10 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
     NSLog(@"[%@] locationManager:didExitRegion:%@ at %@", NSStringFromClass([self class]), region.identifier, [NSDate date]);
+    
+    if (self.regionBlock != nil) {
+        self.regionBlock(region, NO, nil);
+    }
 	
     if ([self.delegate respondsToSelector:@selector(locationManager:didExitRegion:)]) {
         [self.delegate locationManager:self didExitRegion:region];
@@ -324,6 +333,10 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
     NSLog(@"[%@] locationManager:monitoringDidFailForRegion:%@: %@", NSStringFromClass([self class]), region.identifier, error);
 	
+    if (self.regionBlock != nil) {
+        self.regionBlock(region, YES, error);
+    }
+    
     if ([self.delegate respondsToSelector:@selector(locationManager:monitoringDidFailForRegion:withError:)]) {
         [self.delegate locationManager:self monitoringDidFailForRegion:region withError:error];
     }
@@ -399,6 +412,13 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     if (![self isMonitoringThisRegion:region]) {
         [self _addRegionForMonitoring:region desiredAccuracy:accuracy];
     }
+}
+
+- (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy withBlock:(RCLocationManagerRegionUpdateBlock)block {
+    
+    self.regionBlock = block;
+    
+    [self addRegionForMonitoring:region desiredAccuracy:accuracy];
 }
 
 - (void)stopMonitoringForRegion:(CLRegion *)region

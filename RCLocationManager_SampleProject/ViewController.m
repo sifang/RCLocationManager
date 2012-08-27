@@ -10,11 +10,6 @@
 
 #import "ViewController.h"
 
-#import "RegionAnnotation.h"
-#import "RegionAnnotationView.h"
-
-#import "RCLocationManager.h"
-
 @interface ViewController () <RCLocationManagerDelegate, MKMapViewDelegate>
 {
     RCLocationManager *locationManager;
