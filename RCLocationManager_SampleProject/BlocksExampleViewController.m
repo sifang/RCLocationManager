@@ -40,11 +40,9 @@
     // Start updating location changes.
     [locationManager startUpdatingLocationWithBlock:^(CLLocation *newLocation, CLLocation *oldLocation, NSError *error) {
         if (!error) {
-            // Work around a bug in MapKit where user location is not initially zoomed to.
-            if (oldLocation == nil) {
-                MKCoordinateRegion userLocation = MKCoordinateRegionMakeWithDistance(newLocation.coordinate, 1500.0, 1500.0);
-                [self.mapView setRegion:userLocation animated:YES];
-            }
+            
+            MKCoordinateRegion userLocation = MKCoordinateRegionMakeWithDistance(newLocation.coordinate, 10000.0, 10000.0);
+            [self.mapView setRegion:userLocation animated:YES];
             
             NSLog(@"Updated location using block.");
         }
