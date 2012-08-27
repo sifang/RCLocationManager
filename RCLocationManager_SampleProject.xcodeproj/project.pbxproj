@@ -25,6 +25,8 @@
 		4AA9C42315CDBFD700D271A2 /* RemoveRegion.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AA9C41D15CDBFD700D271A2 /* RemoveRegion.png */; };
 		4AA9C42415CDBFD700D271A2 /* RemoveRegion@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AA9C41E15CDBFD700D271A2 /* RemoveRegion@2x.png */; };
 		4AF39CB015CE572F0044B9FC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AF39CAF15CE572F0044B9FC /* QuartzCore.framework */; };
+		FA154C4C15EC04DA005F960D /* BlocksExampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA154C4A15EC04DA005F960D /* BlocksExampleViewController.m */; };
+		FA154C4D15EC04DA005F960D /* BlocksExampleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA154C4B15EC04DA005F960D /* BlocksExampleViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +56,9 @@
 		4AA9C41D15CDBFD700D271A2 /* RemoveRegion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RemoveRegion.png; sourceTree = "<group>"; };
 		4AA9C41E15CDBFD700D271A2 /* RemoveRegion@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RemoveRegion@2x.png"; sourceTree = "<group>"; };
 		4AF39CAF15CE572F0044B9FC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		FA154C4915EC04DA005F960D /* BlocksExampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlocksExampleViewController.h; sourceTree = "<group>"; };
+		FA154C4A15EC04DA005F960D /* BlocksExampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlocksExampleViewController.m; sourceTree = "<group>"; };
+		FA154C4B15EC04DA005F960D /* BlocksExampleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BlocksExampleViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +127,9 @@
 				4A974ABF15CCFC0F00E0F33E /* ViewController.h */,
 				4A974AC015CCFC0F00E0F33E /* ViewController.m */,
 				4A974AC215CCFC0F00E0F33E /* ViewController.xib */,
+				FA154C4915EC04DA005F960D /* BlocksExampleViewController.h */,
+				FA154C4A15EC04DA005F960D /* BlocksExampleViewController.m */,
+				FA154C4B15EC04DA005F960D /* BlocksExampleViewController.xib */,
 				4AA9C41815CDBFD700D271A2 /* Resources */,
 				4A974AB415CCFC0F00E0F33E /* Supporting Files */,
 			);
@@ -218,6 +226,7 @@
 				4AA9C42015CDBFD700D271A2 /* Default@2x.png in Resources */,
 				4AA9C42315CDBFD700D271A2 /* RemoveRegion.png in Resources */,
 				4AA9C42415CDBFD700D271A2 /* RemoveRegion@2x.png in Resources */,
+				FA154C4D15EC04DA005F960D /* BlocksExampleViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,6 +243,7 @@
 				4AA9C40115CD639C00D271A2 /* RegionAnnotation.m in Sources */,
 				4AA9C40215CD639C00D271A2 /* RegionAnnotationView.m in Sources */,
 				4A49984115D67C9500FE73B1 /* RCLocationManager.m in Sources */,
+				FA154C4C15EC04DA005F960D /* BlocksExampleViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

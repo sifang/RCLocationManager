@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 Ricardo Caballero. All rights reserved.
 //
 
-#import <MapKit/MapKit.h>
 #import <QuartzCore/QuartzCore.h>
 
 #import "ViewController.h"
@@ -21,8 +20,6 @@
     RCLocationManager *locationManager;
 }
 
-@property (nonatomic, assign) IBOutlet MKMapView *mapView;
-@property (strong, nonatomic) IBOutlet UIView *infoBox;
 - (IBAction)addRegion:(id)sender;
 
 @end

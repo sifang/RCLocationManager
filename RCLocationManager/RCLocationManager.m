@@ -44,6 +44,12 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 @end
 
+@interface RCLocationManager () // Blocks
+
+@property (copy) RCLocationManagerLocationUpdateBlock locationBlock;
+
+@end
+
 @implementation RCLocationManager
 
 @synthesize delegate = _delegate;
@@ -58,6 +64,16 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 @synthesize userDesiredAccuracy = _userDesiredAccuracy;
 @synthesize regionDistanceFilter = _regionDistanceFilter;
 @synthesize regionDesiredAccuracy = _regionDesiredAccuracy;
+
++ (RCLocationManager *)sharedManager {
+    static RCLocationManager *_sharedClient = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedClient = [[RCLocationManager alloc] init];
+    });
+    
+    return _sharedClient;
+}
 
 - (id)init
 {
@@ -250,6 +266,11 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
 	NSLog(@"[%@] locationManager:didFailWithError:%@", NSStringFromClass([self class]), error);
     
+    // Call location block
+    if (self.locationBlock != nil) {
+        self.locationBlock(nil, nil, error);
+    }
+    
     if ([self.delegate respondsToSelector:@selector(locationManager:didFailWithError:)]) {
         [self.delegate locationManager:self didFailWithError:error];
     }
@@ -262,6 +283,11 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     if (_isOnlyOneRefresh) {
         [_userLocationManager stopUpdatingLocation];
         _isOnlyOneRefresh = NO;
+    }
+    
+    // Call location block
+    if (self.locationBlock != nil) {
+        self.locationBlock(newLocation, oldLocation, nil);
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:RCLocationManagerUserLocationDidChangeNotification
@@ -316,6 +342,13 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     
     _isUpdatingUserLocation = YES;
     [self.userLocationManager startUpdatingLocation];
+}
+
+- (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block {
+    
+    self.locationBlock = block;
+    
+    [self startUpdatingLocation];
 }
 
 - (void)updateUserLocation

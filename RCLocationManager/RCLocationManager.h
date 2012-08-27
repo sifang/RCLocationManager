@@ -20,6 +20,8 @@
 extern NSString * const RCLocationManagerUserLocationDidChangeNotification;
 extern NSString * const RCLocationManagerNotificationLocationUserInfoKey;
 
+typedef void(^RCLocationManagerLocationUpdateBlock)(CLLocation *newLocation, CLLocation *oldLocation, NSError *error);
+
 @protocol RCLocationManagerDelegate;
 
 @interface RCLocationManager : NSObject
@@ -44,11 +46,14 @@ extern NSString * const RCLocationManagerNotificationLocationUserInfoKey;
 @property (nonatomic, assign) CLLocationDistance regionDistanceFilter;
 @property (nonatomic, assign) CLLocationAccuracy regionDesiredAccuracy;
 
++ (RCLocationManager *)sharedManager;
+
 - (id)initWithUserDistanceFilter:(CLLocationDistance)userDistanceFilter userDesiredAccuracy:(CLLocationAccuracy)userDesiredAccuracy purpose:(NSString *)purpose delegate:(id<RCLocationManagerDelegate>)delegate;
 
 + (BOOL)regionMonitoringAvailable;
 
 - (void)startUpdatingLocation;
+- (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block;
 - (void)updateUserLocation;
 - (void)stopUpdatingLocation;
 
