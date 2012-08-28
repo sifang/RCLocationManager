@@ -28,9 +28,6 @@ RCLocationManager *locationManager = [[RCLocationManager alloc] initWithUserDist
 ```
 - Check the header file for all the things you can customize.
 
-### Production apps
-- Use the ```production``` branch
-
 ## Dependencies
 
 ```RCLocationManager``` requires your application to be linked against the ```CoreLocation.framework``` framework.
