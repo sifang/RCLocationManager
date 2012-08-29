@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
+
+#import "RegionAnnotation.h"
+#import "RegionAnnotationView.h"
+
+#import "RCLocationManager.h"
 
 @interface ViewController : UIViewController
+
+@property (nonatomic, assign) IBOutlet MKMapView *mapView;
+@property (strong, nonatomic) IBOutlet UIView *infoBox;;
 
 @end

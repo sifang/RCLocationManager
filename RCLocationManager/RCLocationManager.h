@@ -20,6 +20,12 @@
 extern NSString * const RCLocationManagerUserLocationDidChangeNotification;
 extern NSString * const RCLocationManagerNotificationLocationUserInfoKey;
 
+typedef void(^RCLocationManagerLocationUpdateBlock)(CLLocationManager *manager, CLLocation *newLocation, CLLocation *oldLocation);
+typedef void (^RCLocationManagerLocationUpdateFailBlock)(CLLocationManager *manager, NSError *error);
+
+typedef void(^RCLocationManagerRegionUpdateBlock)(CLLocationManager *manager, CLRegion *region, BOOL enter);
+typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager, CLRegion *region, NSError *error);
+
 @protocol RCLocationManagerDelegate;
 
 @interface RCLocationManager : NSObject
@@ -44,11 +50,14 @@ extern NSString * const RCLocationManagerNotificationLocationUserInfoKey;
 @property (nonatomic, assign) CLLocationDistance regionDistanceFilter;
 @property (nonatomic, assign) CLLocationAccuracy regionDesiredAccuracy;
 
++ (RCLocationManager *)sharedManager;
+
 - (id)initWithUserDistanceFilter:(CLLocationDistance)userDistanceFilter userDesiredAccuracy:(CLLocationAccuracy)userDesiredAccuracy purpose:(NSString *)purpose delegate:(id<RCLocationManagerDelegate>)delegate;
 
 + (BOOL)regionMonitoringAvailable;
 
 - (void)startUpdatingLocation;
+- (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock; // USING BLOCKS
 - (void)updateUserLocation;
 - (void)stopUpdatingLocation;
 
@@ -57,6 +66,7 @@ extern NSString * const RCLocationManagerNotificationLocationUserInfoKey;
 
 - (void)addRegionForMonitoring:(CLRegion *)region;
 - (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy;
+- (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy updateBlock:(RCLocationManagerRegionUpdateBlock)block errorBlock:(RCLocationManagerRegionUpdateFailBlock)errorBlock; // USING BLOCKS
 - (void)stopMonitoringForRegion:(CLRegion *)region;
 - (void)stopMonitoringAllRegions;
 

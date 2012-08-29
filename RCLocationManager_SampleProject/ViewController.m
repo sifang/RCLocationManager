@@ -6,23 +6,15 @@
 //  Copyright (c) 2012 Ricardo Caballero. All rights reserved.
 //
 
-#import <MapKit/MapKit.h>
 #import <QuartzCore/QuartzCore.h>
 
 #import "ViewController.h"
-
-#import "RegionAnnotation.h"
-#import "RegionAnnotationView.h"
-
-#import "RCLocationManager.h"
 
 @interface ViewController () <RCLocationManagerDelegate, MKMapViewDelegate>
 {
     RCLocationManager *locationManager;
 }
 
-@property (nonatomic, assign) IBOutlet MKMapView *mapView;
-@property (strong, nonatomic) IBOutlet UIView *infoBox;
 - (IBAction)addRegion:(id)sender;
 
 @end
