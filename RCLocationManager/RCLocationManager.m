@@ -46,8 +46,13 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 @interface RCLocationManager () // Blocks
 
+// Location Blocks
 @property (copy) RCLocationManagerLocationUpdateBlock locationBlock;
+@property (copy) RCLocationManagerLocationUpdateFailBlock errorLocationBlock;
+
+// Region Blocks
 @property (copy) RCLocationManagerRegionUpdateBlock regionBlock;
+@property (copy) RCLocationManagerRegionUpdateFailBlock errorRegionBlock;
 
 @end
 
@@ -268,8 +273,8 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 	NSLog(@"[%@] locationManager:didFailWithError:%@", NSStringFromClass([self class]), error);
     
     // Call location block
-    if (self.locationBlock != nil) {
-        self.locationBlock(nil, nil, error);
+    if (self.errorLocationBlock != nil) {
+        self.errorLocationBlock(manager, error);
     }
     
     if ([self.delegate respondsToSelector:@selector(locationManager:didFailWithError:)]) {
@@ -288,7 +293,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     
     // Call location block
     if (self.locationBlock != nil) {
-        self.locationBlock(newLocation, oldLocation, nil);
+        self.locationBlock(manager, newLocation, oldLocation);
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:RCLocationManagerUserLocationDidChangeNotification
@@ -306,7 +311,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     NSLog(@"[%@] locationManager:didEnterRegion:%@ at %@", NSStringFromClass([self class]), region.identifier, [NSDate date]);
     	
     if (self.regionBlock != nil) {
-        self.regionBlock(region, YES, nil);
+        self.regionBlock(manager, region, YES);
     }
     
     if ([self.delegate respondsToSelector:@selector(locationManager:didEnterRegion:)]) {
@@ -320,7 +325,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     NSLog(@"[%@] locationManager:didExitRegion:%@ at %@", NSStringFromClass([self class]), region.identifier, [NSDate date]);
     
     if (self.regionBlock != nil) {
-        self.regionBlock(region, NO, nil);
+        self.regionBlock(manager, region, NO);
     }
 	
     if ([self.delegate respondsToSelector:@selector(locationManager:didExitRegion:)]) {
@@ -333,8 +338,8 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 {
     NSLog(@"[%@] locationManager:monitoringDidFailForRegion:%@: %@", NSStringFromClass([self class]), region.identifier, error);
 	
-    if (self.regionBlock != nil) {
-        self.regionBlock(region, YES, error);
+    if (self.errorRegionBlock != nil) {
+        self.errorRegionBlock(manager, region, error);
     }
     
     if ([self.delegate respondsToSelector:@selector(locationManager:monitoringDidFailForRegion:withError:)]) {
@@ -357,9 +362,10 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     [self.userLocationManager startUpdatingLocation];
 }
 
-- (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block {
+- (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock {
     
     self.locationBlock = block;
+    self.errorLocationBlock = errorBlock;
     
     [self startUpdatingLocation];
 }
@@ -414,9 +420,10 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     }
 }
 
-- (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy withBlock:(RCLocationManagerRegionUpdateBlock)block {
+- (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy updateBlock:(RCLocationManagerRegionUpdateBlock)block errorBlock:(RCLocationManagerRegionUpdateFailBlock)errorBlock {
     
     self.regionBlock = block;
+    self.errorRegionBlock = errorBlock;
     
     [self addRegionForMonitoring:region desiredAccuracy:accuracy];
 }

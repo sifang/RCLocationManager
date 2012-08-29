@@ -37,14 +37,13 @@
     // userDesiredAccuracy:kCLLocationAccuracyBest purpose
     
     // Start updating location changes.
-    [locationManager startUpdatingLocationWithBlock:^(CLLocation *newLocation, CLLocation *oldLocation, NSError *error) {
-        if (!error) {
-            
-            MKCoordinateRegion userLocation = MKCoordinateRegionMakeWithDistance(newLocation.coordinate, 10000.0, 10000.0);
-            [self.mapView setRegion:userLocation animated:YES];
-            
-            NSLog(@"Updated location using block.");
-        }
+    [locationManager startUpdatingLocationWithBlock:^(CLLocationManager *manager, CLLocation *newLocation, CLLocation *oldLocation) {
+        MKCoordinateRegion userLocation = MKCoordinateRegionMakeWithDistance(newLocation.coordinate, 10000.0, 10000.0);
+        [self.mapView setRegion:userLocation animated:YES];
+        
+        NSLog(@"Updated location using block.");
+    } errorBlock:^(CLLocationManager *manager, NSError *error) {
+        NSLog(@"Error: %@", [error localizedDescription]);
     }];
 }
 - (void)viewDidAppear:(BOOL)animated
@@ -87,16 +86,14 @@
 		
 		
 		// Start monitoring the newly created region.
-        [[RCLocationManager sharedManager] addRegionForMonitoring:newRegion desiredAccuracy:kCLLocationAccuracyBest withBlock:^(CLRegion *region, BOOL enter, NSError *error) {
-
-            if (error) {
-                NSLog(@"Region ERROR using block");
-            } else if (enter) {
-                NSLog(@"Region ENTER using block");
+        [[RCLocationManager sharedManager] addRegionForMonitoring:newRegion desiredAccuracy:kCLLocationAccuracyBest updateBlock:^(CLLocationManager *manager, CLRegion *region, BOOL enter) {
+            if (enter) {
+                NSLog(@"Enter to region %@", region);
             } else {
-                NSLog(@"Region EXIT using block");
+                NSLog(@"Exit from region %@", region);
             }
-            
+        } errorBlock:^(CLLocationManager *manager, CLRegion *region, NSError *error) {
+            NSLog(@"Error: %@", [error localizedDescription]);
         }];
 	}
 	else {

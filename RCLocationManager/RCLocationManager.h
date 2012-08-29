@@ -20,8 +20,11 @@
 extern NSString * const RCLocationManagerUserLocationDidChangeNotification;
 extern NSString * const RCLocationManagerNotificationLocationUserInfoKey;
 
-typedef void(^RCLocationManagerLocationUpdateBlock)(CLLocation *newLocation, CLLocation *oldLocation, NSError *error);
-typedef void(^RCLocationManagerRegionUpdateBlock)(CLRegion *region, BOOL enter, NSError *error);
+typedef void(^RCLocationManagerLocationUpdateBlock)(CLLocationManager *manager, CLLocation *newLocation, CLLocation *oldLocation);
+typedef void (^RCLocationManagerLocationUpdateFailBlock)(CLLocationManager *manager, NSError *error);
+
+typedef void(^RCLocationManagerRegionUpdateBlock)(CLLocationManager *manager, CLRegion *region, BOOL enter);
+typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager, CLRegion *region, NSError *error);
 
 @protocol RCLocationManagerDelegate;
 
@@ -54,7 +57,7 @@ typedef void(^RCLocationManagerRegionUpdateBlock)(CLRegion *region, BOOL enter, 
 + (BOOL)regionMonitoringAvailable;
 
 - (void)startUpdatingLocation;
-- (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block; // USING BLOCKS
+- (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock; // USING BLOCKS
 - (void)updateUserLocation;
 - (void)stopUpdatingLocation;
 
@@ -63,7 +66,7 @@ typedef void(^RCLocationManagerRegionUpdateBlock)(CLRegion *region, BOOL enter, 
 
 - (void)addRegionForMonitoring:(CLRegion *)region;
 - (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy;
-- (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy withBlock:(RCLocationManagerRegionUpdateBlock)block; // USING BLOCKS
+- (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy updateBlock:(RCLocationManagerRegionUpdateBlock)block errorBlock:(RCLocationManagerRegionUpdateFailBlock)errorBlock; // USING BLOCKS
 - (void)stopMonitoringForRegion:(CLRegion *)region;
 - (void)stopMonitoringAllRegions;
 
