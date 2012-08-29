@@ -71,6 +71,8 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 @synthesize regionDistanceFilter = _regionDistanceFilter;
 @synthesize regionDesiredAccuracy = _regionDesiredAccuracy;
 
+@synthesize locationBlock, errorRegionBlock, regionBlock, errorLocationBlock;
+
 + (RCLocationManager *)sharedManager {
     static RCLocationManager *_sharedClient = nil;
     static dispatch_once_t onceToken;
