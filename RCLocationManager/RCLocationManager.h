@@ -50,6 +50,8 @@ typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager
 @property (nonatomic, assign) CLLocationDistance regionDistanceFilter;
 @property (nonatomic, assign) CLLocationAccuracy regionDesiredAccuracy;
 
+@property (nonatomic, readonly) NSSet *regions;
+
 + (RCLocationManager *)sharedManager;
 
 - (id)initWithUserDistanceFilter:(CLLocationDistance)userDistanceFilter userDesiredAccuracy:(CLLocationAccuracy)userDesiredAccuracy purpose:(NSString *)purpose delegate:(id<RCLocationManagerDelegate>)delegate;

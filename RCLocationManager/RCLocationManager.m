@@ -72,6 +72,8 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 @synthesize regionDistanceFilter = _regionDistanceFilter;
 @synthesize regionDesiredAccuracy = _regionDesiredAccuracy;
 
+@synthesize regions = _regions;
+
 @synthesize locationBlock, errorRegionBlock, regionBlock, errorLocationBlock;
 
 + (RCLocationManager *)sharedManager {
@@ -267,6 +269,11 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     NSLog(@"[%@] location:", NSStringFromClass([self class]));
     
     return self.userLocationManager.location;
+}
+
+- (NSSet *)regions
+{
+    return self.regionLocationManager.monitoredRegions;
 }
 
 #pragma mark - CLLocationManagerDelegate
