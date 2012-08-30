@@ -56,7 +56,10 @@ typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager
 
 - (id)initWithUserDistanceFilter:(CLLocationDistance)userDistanceFilter userDesiredAccuracy:(CLLocationAccuracy)userDesiredAccuracy purpose:(NSString *)purpose delegate:(id<RCLocationManagerDelegate>)delegate;
 
++ (BOOL)locationServicesEnabled;
 + (BOOL)regionMonitoringAvailable;
++ (BOOL)regionMonitoringEnabled;
++ (BOOL)significantLocationChangeMonitoringAvailable;
 
 - (void)startUpdatingLocation;
 - (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock; // USING BLOCKS

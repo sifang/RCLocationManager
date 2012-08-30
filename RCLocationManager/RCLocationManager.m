@@ -359,9 +359,24 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 #pragma mark Method's
 
++ (BOOL)locationServicesEnabled
+{
+    return [CLLocationManager locationServicesEnabled];
+}
+
 + (BOOL)regionMonitoringAvailable
 {
     return [CLLocationManager regionMonitoringAvailable];
+}
+
++ (BOOL)regionMonitoringEnabled
+{
+    return [CLLocationManager regionMonitoringEnabled];
+}
+
++ (BOOL)significantLocationChangeMonitoringAvailable
+{
+    return [CLLocationManager significantLocationChangeMonitoringAvailable];
 }
 
 - (void)startUpdatingLocation
