@@ -50,11 +50,16 @@ typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager
 @property (nonatomic, assign) CLLocationDistance regionDistanceFilter;
 @property (nonatomic, assign) CLLocationAccuracy regionDesiredAccuracy;
 
+@property (nonatomic, readonly) NSSet *regions;
+
 + (RCLocationManager *)sharedManager;
 
 - (id)initWithUserDistanceFilter:(CLLocationDistance)userDistanceFilter userDesiredAccuracy:(CLLocationAccuracy)userDesiredAccuracy purpose:(NSString *)purpose delegate:(id<RCLocationManagerDelegate>)delegate;
 
++ (BOOL)locationServicesEnabled;
 + (BOOL)regionMonitoringAvailable;
++ (BOOL)regionMonitoringEnabled;
++ (BOOL)significantLocationChangeMonitoringAvailable;
 
 - (void)startUpdatingLocation;
 - (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock; // USING BLOCKS
@@ -62,7 +67,8 @@ typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager
 - (void)stopUpdatingLocation;
 
 - (void)addCoordinateForMonitoring:(CLLocationCoordinate2D)coordinate;
-- (void)addCoordinateForMonitoring:(CLLocationCoordinate2D)coordinate desiredAccuracy:(CLLocationAccuracy)accuracy;
+- (void)addCoordinateForMonitoring:(CLLocationCoordinate2D)coordinate withRadius:(CLLocationDistance)radius;
+- (void)addCoordinateForMonitoring:(CLLocationCoordinate2D)coordinate withRadius:(CLLocationDistance)radius desiredAccuracy:(CLLocationAccuracy)accuracy;
 
 - (void)addRegionForMonitoring:(CLRegion *)region;
 - (void)addRegionForMonitoring:(CLRegion *)region desiredAccuracy:(CLLocationAccuracy)accuracy;
