@@ -33,8 +33,8 @@
     // Create location manager with filters set for battery efficiency.
     RCLocationManager *locationManager = [RCLocationManager sharedManager];
     [locationManager setPurpose:@"My custom purpose message"];
-    // UserDistanceFilter:kCLLocationAccuracyHundredMeters
-    // userDesiredAccuracy:kCLLocationAccuracyBest purpose
+    [locationManager setUserDistanceFilter:kCLLocationAccuracyHundredMeters];
+    [locationManager setUserDesiredAccuracy:kCLLocationAccuracyBest];
     
     // Start updating location changes.
     [locationManager startUpdatingLocationWithBlock:^(CLLocationManager *manager, CLLocation *newLocation, CLLocation *oldLocation) {
