@@ -304,6 +304,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     
     if (newLocation.horizontalAccuracy <= manager.desiredAccuracy) {
         NSLog(@"[%@] locationManager:didUpdateToLocation:fromLocation: %@", NSStringFromClass([self class]), newLocation);
+        [self stopQueryingTimer];
         
         if (_isOnlyOneRefresh) {
             [_userLocationManager stopUpdatingLocation];
