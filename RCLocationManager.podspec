@@ -10,7 +10,7 @@ This is allows you to **tracking user location**, **monitoring regions** and obt
   s.homepage     = "http://rcabamo.github.com/RCLocationManager/"
   s.author       = { "Ricardo Caballero" => "rcabamo@gmail.com" }
   
-  s.source       = { :git => "https://github.com/chourobin/RCLocationManager.git", :tag => "0.1" }
+  s.source       = { :git => "https://github.com/rcabamo/RCLocationManager.git", :tag => "0.1" }
   s.platform     = :ios, '5.0'
   s.source_files = 'RCLocationManager'
 
