@@ -266,7 +266,6 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 - (CLLocation *)location
 {
-    NSLog(@"[%@] location:", NSStringFromClass([self class]));
     return _location;
 }
 
