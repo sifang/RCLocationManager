@@ -18,7 +18,7 @@
 
 #define MAX_MONITORING_REGIONS 20
 
-#define kDefaultTimeout 5
+#define kDefaultTimeout 10.0
 #define kDefaultUserDistanceFilter  kCLLocationAccuracyBestForNavigation
 #define kDefaultUserDesiredAccuracy kCLLocationAccuracyBest
 #define kDefaultRegionDistanceFilter  kCLLocationAccuracyBestForNavigation
@@ -68,6 +68,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 @synthesize userLocationManager = _userLocationManager;
 @synthesize regionLocationManager = _regionLocationManager;
 
+@synthesize defaultTimeout = _defaultTimeout;
 @synthesize userDistanceFilter = _userDistanceFilter;
 @synthesize userDesiredAccuracy = _userDesiredAccuracy;
 @synthesize regionDistanceFilter = _regionDistanceFilter;
@@ -134,6 +135,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     _regionLocationManager.desiredAccuracy = kDefaultRegionDesiredAccuracy;
     _regionLocationManager.delegate = self;
     
+    _defaultTimeout = kDefaultTimeout;
 }
 
 #pragma mark - Private
@@ -210,6 +212,13 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 }
 
 #pragma mark - Setters
+
+- (void)setDefaultTimeout:(CGFloat)defaultTimeout
+{
+    NSLog(@"[%@] setDefaultTimeout:%f", NSStringFromClass([self class]), defaultTimeout);
+    
+    _defaultTimeout = defaultTimeout;
+}
 
 - (void)setUserDistanceFilter:(CLLocationDistance)userDistanceFilter
 {
@@ -415,7 +424,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 -(void)startQueryingTimer
 {
     [self stopQueryingTimer];
-    _queryingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(queryingTimerPassed) userInfo:nil repeats:YES];
+    _queryingTimer = [NSTimer scheduledTimerWithTimeInterval:_defaultTimeout target:self selector:@selector(queryingTimerPassed) userInfo:nil repeats:YES];
 }
 
 -(void)stopQueryingTimer
