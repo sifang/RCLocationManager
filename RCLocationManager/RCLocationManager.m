@@ -277,7 +277,6 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 - (CLLocation *)location
 {
     //Get locally stored location so that the location system icon does not falsely appear when reading user location
-    NSLog(@"[%@] location:", NSStringFromClass([self class]));
     return _location;
 }
 
