@@ -18,6 +18,7 @@
 
 #define MAX_MONITORING_REGIONS 20
 
+#define kDefaultTimeout 10.0
 #define kDefaultUserDistanceFilter  kCLLocationAccuracyBestForNavigation
 #define kDefaultUserDesiredAccuracy kCLLocationAccuracyBest
 #define kDefaultRegionDistanceFilter  kCLLocationAccuracyBestForNavigation
@@ -67,6 +68,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 @synthesize userLocationManager = _userLocationManager;
 @synthesize regionLocationManager = _regionLocationManager;
 
+@synthesize defaultTimeout = _defaultTimeout;
 @synthesize userDistanceFilter = _userDistanceFilter;
 @synthesize userDesiredAccuracy = _userDesiredAccuracy;
 @synthesize regionDistanceFilter = _regionDistanceFilter;
@@ -133,6 +135,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     _regionLocationManager.desiredAccuracy = kDefaultRegionDesiredAccuracy;
     _regionLocationManager.delegate = self;
     
+    _defaultTimeout = kDefaultTimeout;
 }
 
 #pragma mark - Private
@@ -210,6 +213,13 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 #pragma mark - Setters
 
+- (void)setDefaultTimeout:(CGFloat)defaultTimeout
+{
+    NSLog(@"[%@] setDefaultTimeout:%f", NSStringFromClass([self class]), defaultTimeout);
+    
+    _defaultTimeout = defaultTimeout;
+}
+
 - (void)setUserDistanceFilter:(CLLocationDistance)userDistanceFilter
 {
     NSLog(@"[%@] setUserDistanceFilter:%f", NSStringFromClass([self class]), userDistanceFilter);
@@ -266,6 +276,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 - (CLLocation *)location
 {
+    //Get locally stored location so that the location system icon does not falsely appear when reading user location
     return _location;
 }
 
@@ -299,13 +310,16 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
         NSLog(@"locationManager didUpdateToLocation with timestamp %@ which is to old to use", newLocation.timestamp);
         return;
     }
+    
+    // Store user location locally
     _location = newLocation;
     
-    if (newLocation.horizontalAccuracy <= manager.desiredAccuracy) {
+    if (newLocation.horizontalAccuracy <= manager.desiredAccuracy || _isOnlyOneRefresh == NO) {
         NSLog(@"[%@] locationManager:didUpdateToLocation:fromLocation: %@", NSStringFromClass([self class]), newLocation);
-        [self stopQueryingTimer];
         
         if (_isOnlyOneRefresh) {
+            // Stop querying timer because accurate location was obtained
+            [self stopQueryingTimer];
             [_userLocationManager stopUpdatingLocation];
             _isOnlyOneRefresh = NO;
         }
@@ -320,6 +334,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
                                                           userInfo:(
                                                                     [NSDictionary dictionaryWithObject:newLocation
                                                                                                 forKey:RCLocationManagerNotificationLocationUserInfoKey])];
+        
         if ([self.delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:fromLocation:)]) {
             [self.delegate locationManager:self didUpdateToLocation:newLocation fromLocation:oldLocation];
         }
@@ -395,7 +410,6 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     
     _isUpdatingUserLocation = YES;
     [self.userLocationManager startUpdatingLocation];
-    [self startQueryingTimer];
 }
 
 - (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock {
@@ -409,7 +423,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 -(void)startQueryingTimer
 {
     [self stopQueryingTimer];
-    _queryingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(queryingTimerPassed) userInfo: nil repeats: YES];
+    _queryingTimer = [NSTimer scheduledTimerWithTimeInterval:_defaultTimeout target:self selector:@selector(queryingTimerPassed) userInfo:nil repeats:YES];
 }
 
 -(void)stopQueryingTimer
@@ -441,7 +455,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 - (void)retriveUserLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock {
     
     _isOnlyOneRefresh = YES;
-    
+    [self startQueryingTimer];
     [self startUpdatingLocationWithBlock:block errorBlock:errorBlock];
 }
 

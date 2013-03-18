@@ -44,6 +44,9 @@ typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager
 
 #pragma mark - Customization
 
+// Timeout for retrieving an accurate location using blocks, default is 10 seconds
+@property (nonatomic, assign) CGFloat defaultTimeout;
+
 @property (nonatomic, assign) CLLocationDistance userDistanceFilter;
 @property (nonatomic, assign) CLLocationAccuracy userDesiredAccuracy;
 
