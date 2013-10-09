@@ -452,7 +452,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     }
 }
 
-- (void)retriveUserLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock {
+- (void)retrieveUserLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock {
     
     _isOnlyOneRefresh = YES;
     [self startQueryingTimer];
