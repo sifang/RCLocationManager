@@ -167,11 +167,9 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     CLLocation *location = [[CLLocation alloc] initWithLatitude:region.center.latitude longitude:region.center.longitude];
     CLLocation *otherLocation = [[CLLocation alloc] initWithLatitude:otherRegion.center.latitude longitude:otherRegion.center.longitude];
     
-    if ([region containsCoordinate:otherRegion.center] || [otherRegion containsCoordinate:region.center]) {
+    if ([otherRegion containsCoordinate:region.center]) {
         if ([location distanceFromLocation:otherLocation] + region.radius <= otherRegion.radius ) {
             return YES;
-        } else if ([location distanceFromLocation:otherLocation] + otherRegion.radius <= region.radius ) {
-            return NO;
         }
     }
     return NO;
