@@ -404,26 +404,34 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 - (void) requestUserLocationWhenInUse
 {
-    [self checkBundleInfoFor:@"NSLocationWhenInUseUsageDescription"];
-    [self.userLocationManager requestWhenInUseAuthorization];
+    if ([self.userLocationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self checkBundleInfoFor:@"NSLocationWhenInUseUsageDescription"];
+        [self.userLocationManager requestWhenInUseAuthorization];
+    }
 }
 
 - (void) requestUserLocationAlways
 {
-    [self checkBundleInfoFor:@"NSLocationAlwaysUsageDescription"];
-    [self.userLocationManager requestAlwaysAuthorization];
+    if ([self.userLocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+        [self checkBundleInfoFor:@"NSLocationAlwaysUsageDescription"];
+        [self.userLocationManager requestAlwaysAuthorization];
+    }
 }
 
 - (void) requestRegionLocationWhenInUse
 {
-    [self checkBundleInfoFor:@"NSLocationWhenInUseUsageDescription"];
-    [self.regionLocationManager requestWhenInUseAuthorization];
+    if ([self.regionLocationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self checkBundleInfoFor:@"NSLocationWhenInUseUsageDescription"];
+        [self.regionLocationManager requestWhenInUseAuthorization];
+    }
 }
 
 - (void) requestRegionLocationAlways
 {
-    [self checkBundleInfoFor:@"NSLocationAlwaysUsageDescription"];
-    [self.regionLocationManager requestAlwaysAuthorization];
+    if ([self.regionLocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+        [self checkBundleInfoFor:@"NSLocationAlwaysUsageDescription"];
+        [self.regionLocationManager requestAlwaysAuthorization];
+    }
 }
 
 -(void) checkBundleInfoFor:(NSString*)key {
