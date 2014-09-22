@@ -402,6 +402,54 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     return [CLLocationManager significantLocationChangeMonitoringAvailable];
 }
 
+- (void) requestUserLocationWhenInUse
+{
+    if ([self.userLocationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self checkBundleInfoFor:@"NSLocationWhenInUseUsageDescription"];
+        [self.userLocationManager requestWhenInUseAuthorization];
+    }
+}
+
+- (void) requestUserLocationAlways
+{
+    if ([self.userLocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+        [self checkBundleInfoFor:@"NSLocationAlwaysUsageDescription"];
+        [self.userLocationManager requestAlwaysAuthorization];
+    }
+}
+
+- (void) requestRegionLocationWhenInUse
+{
+    if ([self.regionLocationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self checkBundleInfoFor:@"NSLocationWhenInUseUsageDescription"];
+        [self.regionLocationManager requestWhenInUseAuthorization];
+    }
+}
+
+- (void) requestRegionLocationAlways
+{
+    if ([self.regionLocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+        [self checkBundleInfoFor:@"NSLocationAlwaysUsageDescription"];
+        [self.regionLocationManager requestAlwaysAuthorization];
+    }
+}
+
+-(void) checkBundleInfoFor:(NSString*)key {
+
+    static NSString * const kMsg = @"Warning! Unable to find %@ in Info.plist.  \
+                                    CLLocationManager requires that %@ be set in \
+                                    the Info.plist in order to function correctly.  \
+                                    Please consult the Apple Developer documentation titled \
+                                    \"Information Property List Key Reference.\"";
+
+    NSDictionary * const infoPlist = [[NSBundle mainBundle] infoDictionary];
+
+    if ([infoPlist objectForKey:key]) {
+        NSLog(kMsg, key, key);
+    }
+
+}
+
 - (void)startUpdatingLocation
 {
     NSLog(@"[%@] startUpdatingLocation:", NSStringFromClass([self class]));
