@@ -509,13 +509,13 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 - (void) requestUserLocationWhenInUseWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block
 {
     [userAuthorizationRequests addObject:[block copy]];
-    [self requestUserLocationAlways];
+    [self requestUserLocationWhenInUse];
 }
 
 - (void) requestUserLocationAlwaysOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block
 {
     [userAuthorizationRequests addObject:[block copy]];
-    [self requestUserLocationWhenInUse];
+    [self requestUserLocationAlways];
 }
 
 - (void) requestRegionLocationWhenInUse
