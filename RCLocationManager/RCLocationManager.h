@@ -26,6 +26,8 @@ typedef void (^RCLocationManagerLocationUpdateFailBlock)(CLLocationManager *mana
 typedef void(^RCLocationManagerRegionUpdateBlock)(CLLocationManager *manager, CLRegion *region, BOOL enter);
 typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager, CLRegion *region, NSError *error);
 
+typedef void(^RCLocationManagerAuthorizationStatusChangeBlock)(CLLocationManager *manager, CLAuthorizationStatus status);
+
 @protocol RCLocationManagerDelegate;
 
 @interface RCLocationManager : NSObject
@@ -66,10 +68,13 @@ typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager
 
 - (void) requestUserLocationWhenInUse;
 - (void) requestUserLocationAlways;
+- (void) requestUserLocationWhenInUseWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+- (void) requestUserLocationAlways:(RCLocationManagerAuthorizationStatusChangeBlock)block;
 
 - (void) requestRegionLocationWhenInUse;
 - (void) requestRegionLocationAlways;
-
+- (void) requestRegionLocationWhenInUseWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+- (void) requestRegionLocationAlwaysWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block;
 
 - (void)startUpdatingLocation;
 - (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock; // USING BLOCKS
@@ -92,6 +97,9 @@ typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager
 @protocol RCLocationManagerDelegate <NSObject>
 
 @optional
+
+- (void)locationManager:(RCLocationManager *)manager didChangeUserAuthorizationStatus:(CLAuthorizationStatus)status;
+- (void)locationManager:(RCLocationManager *)manager didChangeRegionAuthorizationStatus:(CLAuthorizationStatus)status;
 - (void)locationManager:(RCLocationManager *)manager didFailWithError:(NSError *)error;
 - (void)locationManager:(RCLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation;
 - (void)locationManager:(RCLocationManager *)manager didEnterRegion:(CLRegion *)region;
