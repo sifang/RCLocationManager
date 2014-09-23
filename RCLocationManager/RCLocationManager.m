@@ -56,6 +56,11 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 @property (copy) RCLocationManagerRegionUpdateBlock regionBlock;
 @property (copy) RCLocationManagerRegionUpdateFailBlock errorRegionBlock;
 
+// Used one-off for authorization requests
+@property (nonatomic, strong) NSMutableArray *userAuthorizationRequests;
+@property (nonatomic, strong) NSMutableArray *regionAuthorizationRequests;
+
+// Used for continuous updates of authorization requests
 @property (copy) RCLocationManagerAuthorizationStatusChangeBlock userAuthorizationStatusChangeBlock;
 @property (copy) RCLocationManagerAuthorizationStatusChangeBlock regionAuthorizationStatusChangeBlock;
 
@@ -79,7 +84,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 @synthesize regions = _regions;
 
-@synthesize locationBlock, errorRegionBlock, regionBlock, errorLocationBlock, regionAuthorizationStatusChangeBlock, userAuthorizationStatusChangeBlock;
+@synthesize locationBlock, errorRegionBlock, regionBlock, errorLocationBlock, userAuthorizationRequests, regionAuthorizationRequests, userAuthorizationStatusChangeBlock, regionAuthorizationStatusChangeBlock;
 
 + (RCLocationManager *)sharedManager {
     static RCLocationManager *_sharedClient = nil;
@@ -139,6 +144,10 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     _regionLocationManager.delegate = self;
     
     _defaultTimeout = kDefaultTimeout;
+    
+    userAuthorizationRequests = [NSMutableArray array];
+    regionAuthorizationRequests = [NSMutableArray array];
+
 }
 
 #pragma mark - Private
@@ -394,6 +403,13 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
             regionAuthorizationStatusChangeBlock(manager, status);
         }
 
+        for (RCLocationManagerAuthorizationStatusChangeBlock block in [regionAuthorizationRequests copy])
+        {
+            block(manager, status);
+        }
+
+        regionAuthorizationRequests = [NSMutableArray array];
+
     } else if (manager == _userLocationManager) {
 
         if ([_delegate respondsToSelector:@selector(locationManager:didChangeUserAuthorizationStatus:)]) {
@@ -403,6 +419,13 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
         if (userAuthorizationStatusChangeBlock != nil) {
             userAuthorizationStatusChangeBlock(manager, nil);
         }
+
+        for (RCLocationManagerAuthorizationStatusChangeBlock block in [userAuthorizationRequests copy])
+        {
+            block(manager, status);
+        }
+
+        userAuthorizationRequests = [NSMutableArray array];
 
     }
 }
@@ -483,6 +506,18 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     [self requestUserLocationAlways];
 }
 
+- (void) requestUserLocationWhenInUseWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    [userAuthorizationRequests addObject:[block copy]];
+    [self requestUserLocationAlways];
+}
+
+- (void) requestUserLocationAlwaysOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    [userAuthorizationRequests addObject:[block copy]];
+    [self requestUserLocationWhenInUse];
+}
+
 - (void) requestRegionLocationWhenInUse
 {
     
@@ -534,6 +569,18 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 - (void) requestRegionLocationAlwaysWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block
 {
     self.regionAuthorizationStatusChangeBlock = block;
+    [self requestRegionLocationAlways];
+}
+
+- (void) requestRegionLocationWhenInUseWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    [regionAuthorizationRequests addObject:[block copy]];
+    [self requestRegionLocationWhenInUse];
+}
+
+- (void) requestRegionLocationAlwaysWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    [regionAuthorizationRequests addObject:[block copy]];
     [self requestRegionLocationAlways];
 }
 

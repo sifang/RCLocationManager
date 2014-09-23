@@ -66,15 +66,30 @@ typedef void(^RCLocationManagerAuthorizationStatusChangeBlock)(CLLocationManager
 + (BOOL)regionMonitoringEnabled;
 + (BOOL)significantLocationChangeMonitoringAvailable;
 
+// Used for when you don't care when the app is authorized/deauthorized
 - (void) requestUserLocationWhenInUse;
 - (void) requestUserLocationAlways;
+
+// Used for when you want to receive continuous updates as to whether or not
 - (void) requestUserLocationWhenInUseWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block;
 - (void) requestUserLocationAlways:(RCLocationManagerAuthorizationStatusChangeBlock)block;
 
+// Used if you only want to ask once
+- (void) requestUserLocationWhenInUseWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+- (void) requestUserLocationAlwaysOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+
+// Used for when you don't care when the app is authorized/deauthorized
 - (void) requestRegionLocationWhenInUse;
 - (void) requestRegionLocationAlways;
+
+// Used for when you want to receive continuous updates as to whether or not
 - (void) requestRegionLocationWhenInUseWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block;
 - (void) requestRegionLocationAlwaysWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+
+// Used if you only want to ask once
+- (void) requestRegionLocationWhenInUseWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+- (void) requestRegionLocationAlwaysWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+
 
 - (void)startUpdatingLocation;
 - (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock; // USING BLOCKS
