@@ -56,6 +56,14 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 @property (copy) RCLocationManagerRegionUpdateBlock regionBlock;
 @property (copy) RCLocationManagerRegionUpdateFailBlock errorRegionBlock;
 
+// Used one-off for authorization requests
+@property (nonatomic, strong) NSMutableArray *userAuthorizationRequests;
+@property (nonatomic, strong) NSMutableArray *regionAuthorizationRequests;
+
+// Used for continuous updates of authorization requests
+@property (copy) RCLocationManagerAuthorizationStatusChangeBlock userAuthorizationStatusChangeBlock;
+@property (copy) RCLocationManagerAuthorizationStatusChangeBlock regionAuthorizationStatusChangeBlock;
+
 @end
 
 @implementation RCLocationManager
@@ -76,7 +84,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 @synthesize regions = _regions;
 
-@synthesize locationBlock, errorRegionBlock, regionBlock, errorLocationBlock;
+@synthesize locationBlock, errorRegionBlock, regionBlock, errorLocationBlock, userAuthorizationRequests, regionAuthorizationRequests, userAuthorizationStatusChangeBlock, regionAuthorizationStatusChangeBlock;
 
 + (RCLocationManager *)sharedManager {
     static RCLocationManager *_sharedClient = nil;
@@ -136,6 +144,10 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     _regionLocationManager.delegate = self;
     
     _defaultTimeout = kDefaultTimeout;
+    
+    userAuthorizationRequests = [NSMutableArray array];
+    regionAuthorizationRequests = [NSMutableArray array];
+
 }
 
 #pragma mark - Private
@@ -380,6 +392,44 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     }
 }
 
+- (void) locationManager:(CLLocationManager*)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    if (manager == _regionLocationManager) {
+
+        if ([_delegate respondsToSelector:@selector(locationManager:didChangeRegionAuthorizationStatus:)]) {
+            [_delegate locationManager:self didChangeRegionAuthorizationStatus:status];
+        }
+
+        if (regionAuthorizationStatusChangeBlock != nil) {
+            regionAuthorizationStatusChangeBlock(manager, status);
+        }
+
+        for (RCLocationManagerAuthorizationStatusChangeBlock block in [regionAuthorizationRequests copy])
+        {
+            block(manager, status);
+        }
+
+        regionAuthorizationRequests = [NSMutableArray array];
+
+    } else if (manager == _userLocationManager) {
+
+        if ([_delegate respondsToSelector:@selector(locationManager:didChangeUserAuthorizationStatus:)]) {
+            [_delegate locationManager:self didChangeUserAuthorizationStatus:status];
+        }
+
+        if (userAuthorizationStatusChangeBlock != nil) {
+            userAuthorizationStatusChangeBlock(manager, nil);
+        }
+
+        for (RCLocationManagerAuthorizationStatusChangeBlock block in [userAuthorizationRequests copy])
+        {
+            block(manager, status);
+        }
+
+        userAuthorizationRequests = [NSMutableArray array];
+
+    }
+}
+
 #pragma mark Method's
 
 + (BOOL)locationServicesEnabled
@@ -404,34 +454,134 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
 - (void) requestUserLocationWhenInUse
 {
-    if ([self.userLocationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+
+    CLAuthorizationStatus const status = [CLLocationManager authorizationStatus];
+
+    if ([_userLocationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+
         [self checkBundleInfoFor:@"NSLocationWhenInUseUsageDescription"];
-        [self.userLocationManager requestWhenInUseAuthorization];
+
+        if (status == kCLAuthorizationStatusNotDetermined) {
+            [_userLocationManager requestWhenInUseAuthorization];
+        } else {
+            [self locationManager:_userLocationManager didChangeAuthorizationStatus:status];
+        }
+
+    } else {
+        [self locationManager:_userLocationManager didChangeAuthorizationStatus:status];
     }
+
 }
 
 - (void) requestUserLocationAlways
 {
-    if ([self.userLocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+
+    CLAuthorizationStatus const status = [CLLocationManager authorizationStatus];
+
+    if ([_userLocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+
         [self checkBundleInfoFor:@"NSLocationAlwaysUsageDescription"];
-        [self.userLocationManager requestAlwaysAuthorization];
+
+        if (status == kCLAuthorizationStatusNotDetermined) {
+            [_userLocationManager requestAlwaysAuthorization];
+        } else {
+            [self locationManager:_userLocationManager didChangeAuthorizationStatus:status];
+        }
+
+    } else {
+        [self locationManager:_userLocationManager didChangeAuthorizationStatus:status];
     }
+
+}
+
+- (void) requestUserLocationWhenInUseWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    self.userAuthorizationStatusChangeBlock = block;
+    [self requestUserLocationWhenInUse];
+}
+
+- (void) requestUserLocationAlways:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    self.userAuthorizationStatusChangeBlock = block;
+    [self requestUserLocationAlways];
+}
+
+- (void) requestUserLocationWhenInUseWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    [userAuthorizationRequests addObject:[block copy]];
+    [self requestUserLocationWhenInUse];
+}
+
+- (void) requestUserLocationAlwaysOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    [userAuthorizationRequests addObject:[block copy]];
+    [self requestUserLocationAlways];
 }
 
 - (void) requestRegionLocationWhenInUse
 {
-    if ([self.regionLocationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+    
+    CLAuthorizationStatus const status = [CLLocationManager authorizationStatus];
+
+    if ([_regionLocationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+
         [self checkBundleInfoFor:@"NSLocationWhenInUseUsageDescription"];
-        [self.regionLocationManager requestWhenInUseAuthorization];
+
+        if (status == kCLAuthorizationStatusNotDetermined) {
+            [_regionLocationManager requestWhenInUseAuthorization];
+        } else {
+            [self locationManager:_regionLocationManager didChangeAuthorizationStatus:status];
+        }
+
+    } else {
+        [self locationManager:_regionLocationManager didChangeAuthorizationStatus:status];
     }
+
 }
 
 - (void) requestRegionLocationAlways
 {
-    if ([self.regionLocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+
+    CLAuthorizationStatus const status = [CLLocationManager authorizationStatus];
+
+    if ([_regionLocationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+
         [self checkBundleInfoFor:@"NSLocationAlwaysUsageDescription"];
-        [self.regionLocationManager requestAlwaysAuthorization];
+
+        if (status == kCLAuthorizationStatusNotDetermined) {
+            [_regionLocationManager requestAlwaysAuthorization];
+        } else {
+            [self locationManager:_regionLocationManager didChangeAuthorizationStatus:status];
+        }
+
+    } else {
+        [self locationManager:_regionLocationManager didChangeAuthorizationStatus:status];
     }
+
+}
+
+- (void) requestRegionLocationWhenInUseWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    self.regionAuthorizationStatusChangeBlock = block;
+    [self requestRegionLocationWhenInUse];
+}
+
+- (void) requestRegionLocationAlwaysWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    self.regionAuthorizationStatusChangeBlock = block;
+    [self requestRegionLocationAlways];
+}
+
+- (void) requestRegionLocationWhenInUseWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    [regionAuthorizationRequests addObject:[block copy]];
+    [self requestRegionLocationWhenInUse];
+}
+
+- (void) requestRegionLocationAlwaysWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block
+{
+    [regionAuthorizationRequests addObject:[block copy]];
+    [self requestRegionLocationAlways];
 }
 
 -(void) checkBundleInfoFor:(NSString*)key {
@@ -462,8 +612,9 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
     
     self.locationBlock = block;
     self.errorLocationBlock = errorBlock;
-    
+
     [self startUpdatingLocation];
+
 }
 
 -(void)startQueryingTimer

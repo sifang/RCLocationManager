@@ -26,6 +26,8 @@ typedef void (^RCLocationManagerLocationUpdateFailBlock)(CLLocationManager *mana
 typedef void(^RCLocationManagerRegionUpdateBlock)(CLLocationManager *manager, CLRegion *region, BOOL enter);
 typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager, CLRegion *region, NSError *error);
 
+typedef void(^RCLocationManagerAuthorizationStatusChangeBlock)(CLLocationManager *manager, CLAuthorizationStatus status);
+
 @protocol RCLocationManagerDelegate;
 
 @interface RCLocationManager : NSObject
@@ -64,12 +66,40 @@ typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager
 + (BOOL)regionMonitoringEnabled;
 + (BOOL)significantLocationChangeMonitoringAvailable;
 
+// One of these call is required on iOS8+ to use location services.  However, on iOS7 and below this call is safe to
+// make without encountering an exception.  In cases where the underlying API call is not necessary, such as when
+// the user has already approved access, the blocks/delegate calls will be immediately dispatched.  For more information
+// see the CLLocationManager documentation.
+
+// Used for when you don't care when the app is authorized/deauthorized to use location services.  The delegate
+// assigned to this manager will receive call backs as well as any blocks dedicated to continually listening
+// for updates.
 - (void) requestUserLocationWhenInUse;
 - (void) requestUserLocationAlways;
 
+// Used for when you want to receive continuous updates on the authorization status
+- (void) requestUserLocationWhenInUseWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+- (void) requestUserLocationAlways:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+
+// Used for when you want to ask once if the user has allowed location services.  Once the blocks
+// are called, they are released and forgotten.
+- (void) requestUserLocationWhenInUseWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+- (void) requestUserLocationAlwaysOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+
+// Used for when you don't care when the app is authorized/deauthorized to use location services.  The delegate
+// assigned to this manager will receive call backs as well as any blocks dedicated to continually listening
+// for updates.
 - (void) requestRegionLocationWhenInUse;
 - (void) requestRegionLocationAlways;
 
+// Used for when you want to receive continuous updates on the authorization status
+- (void) requestRegionLocationWhenInUseWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+- (void) requestRegionLocationAlwaysWithBlock:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+
+// Used for when you want to ask once if the user has allowed location services.  Once the blocks
+// are called, they are released and forgotten.
+- (void) requestRegionLocationWhenInUseWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block;
+- (void) requestRegionLocationAlwaysWithBlockOnce:(RCLocationManagerAuthorizationStatusChangeBlock)block;
 
 - (void)startUpdatingLocation;
 - (void)startUpdatingLocationWithBlock:(RCLocationManagerLocationUpdateBlock)block errorBlock:(RCLocationManagerLocationUpdateFailBlock)errorBlock; // USING BLOCKS
@@ -92,6 +122,9 @@ typedef void(^RCLocationManagerRegionUpdateFailBlock)(CLLocationManager *manager
 @protocol RCLocationManagerDelegate <NSObject>
 
 @optional
+
+- (void)locationManager:(RCLocationManager *)manager didChangeUserAuthorizationStatus:(CLAuthorizationStatus)status;
+- (void)locationManager:(RCLocationManager *)manager didChangeRegionAuthorizationStatus:(CLAuthorizationStatus)status;
 - (void)locationManager:(RCLocationManager *)manager didFailWithError:(NSError *)error;
 - (void)locationManager:(RCLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation;
 - (void)locationManager:(RCLocationManager *)manager didEnterRegion:(CLRegion *)region;
