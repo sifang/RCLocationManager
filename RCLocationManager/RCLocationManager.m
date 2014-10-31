@@ -417,7 +417,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
         }
 
         if (userAuthorizationStatusChangeBlock != nil) {
-            userAuthorizationStatusChangeBlock(manager, nil);
+            userAuthorizationStatusChangeBlock(manager, status);
         }
 
         for (RCLocationManagerAuthorizationStatusChangeBlock block in [userAuthorizationRequests copy])
