@@ -594,7 +594,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
     NSDictionary * const infoPlist = [[NSBundle mainBundle] infoDictionary];
 
-    if ([infoPlist objectForKey:key]) {
+    if (![infoPlist objectForKey:key]) {
         NSLog(kMsg, key, key);
     }
 
