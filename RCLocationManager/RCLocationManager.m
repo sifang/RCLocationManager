@@ -417,7 +417,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
         }
 
         if (userAuthorizationStatusChangeBlock != nil) {
-            userAuthorizationStatusChangeBlock(manager, nil);
+            userAuthorizationStatusChangeBlock(manager, status);
         }
 
         for (RCLocationManagerAuthorizationStatusChangeBlock block in [userAuthorizationRequests copy])
@@ -594,7 +594,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
     NSDictionary * const infoPlist = [[NSBundle mainBundle] infoDictionary];
 
-    if ([infoPlist objectForKey:key]) {
+    if (![infoPlist objectForKey:key]) {
         NSLog(kMsg, key, key);
     }
 
