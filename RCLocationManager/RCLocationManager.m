@@ -482,7 +482,7 @@ NSString * const RCLocationManagerNotificationLocationUserInfoKey = @"newLocatio
 
         [self checkBundleInfoFor:@"NSLocationAlwaysUsageDescription"];
 
-        if (status == kCLAuthorizationStatusNotDetermined) {
+        if (status == kCLAuthorizationStatusNotDetermined || status == kCLAuthorizationStatusAuthorizedWhenInUse) {
             [_userLocationManager requestAlwaysAuthorization];
         } else {
             [self locationManager:_userLocationManager didChangeAuthorizationStatus:status];
